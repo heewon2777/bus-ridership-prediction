@@ -31,6 +31,7 @@ load_dotenv()
 
 KAKAO_JS_KEY = os.getenv("KAKAO_JS_KEY", "").strip()
 KAKAO_REST_API_KEY = os.getenv("KAKAO_REST_API_KEY", "").strip()
+ODSAY_API_KEY = os.getenv("ODSAY_API_KEY", "").strip()
 
 
 def _is_placeholder(value: str) -> bool:
@@ -41,6 +42,14 @@ if _is_placeholder(KAKAO_JS_KEY):
     print("[경고] KAKAO_JS_KEY가 설정되지 않았습니다. .env.example을 .env로 복사하고 실제 키를 넣어주세요.")
 if _is_placeholder(KAKAO_REST_API_KEY):
     print("[경고] KAKAO_REST_API_KEY가 설정되지 않았습니다. .env.example을 .env로 복사하고 실제 키를 넣어주세요.")
+if _is_placeholder(ODSAY_API_KEY):
+    print("[경고] ODSAY_API_KEY가 설정되지 않았습니다. .env.example을 .env로 복사하고 실제 키를 넣어주세요.")
+
+# ODsay 응답의 trafficType 코드. ODsay 공식 문서(코드정의 표)에서 공통적으로 쓰이는
+# 값이지만, 이 환경에서는 실제 API를 호출해 응답을 직접 확인할 수 없었다 — 사용자가
+# 실제 키로 처음 호출해볼 때, 아래 매핑과 실제 응답이 맞는지 한 번은 확인해보는 것을
+# 권장한다 (README "검증한 것/검증하지 못한 것" 참고).
+ODSAY_TRAFFIC_TYPE = {1: "subway", 2: "bus", 3: "walk"}
 
 app = FastAPI(title="내가 과연 탈 수 있을까 — 실제 지도 연동 API")
 
@@ -108,6 +117,102 @@ async def search_places(query: str = Query("", description="검색할 장소명/
         for doc in data.get("documents", [])
     ]
     return {"results": results}
+
+
+@app.get("/api/route")
+async def search_route(
+    sx: float = Query(..., description="출발지 경도"),
+    sy: float = Query(..., description="출발지 위도"),
+    ex: float = Query(..., description="도착지 경도"),
+    ey: float = Query(..., description="도착지 위도"),
+):
+    """두 좌표 사이의 실제 대중교통(도보+버스+지하철) 경로를 ODsay API로 조회한다.
+    프론트엔드는 지금까지 두 지점의 직선거리(haversine)만 보여줬는데, 이 엔드포인트가
+    붙으면 실제 소요시간·요금·구간별(도보/버스/지하철) 경로로 대체할 수 있다."""
+
+    if _is_placeholder(ODSAY_API_KEY):
+        raise HTTPException(
+            status_code=500,
+            detail="ODSAY_API_KEY가 서버(backend/.env)에 설정되어 있지 않습니다.",
+        )
+
+    params = {
+        "SX": sx,
+        "SY": sy,
+        "EX": ex,
+        "EY": ey,
+        "OPT": 0,  # 0 = 추천경로 순 정렬
+        "SearchPathType": 0,  # 0 = 지하철/버스 모두 포함
+        "apiKey": ODSAY_API_KEY,
+    }
+
+    try:
+        async with httpx.AsyncClient(timeout=8.0) as client:
+            resp = await client.get(
+                "https://api.odsay.com/v1/api/searchPubTransPathT",
+                params=params,
+            )
+    except httpx.HTTPError as exc:
+        raise HTTPException(status_code=500, detail=f"ODsay API 호출 중 오류가 발생했습니다: {exc}") from exc
+
+    if resp.status_code != 200:
+        raise HTTPException(
+            status_code=resp.status_code,
+            detail=f"ODsay API 호출에 실패했습니다: {resp.text}",
+        )
+
+    data = resp.json()
+
+    # ODsay는 HTTP 200이어도 좌표 근처에 정류장이 없거나 키가 잘못된 경우 에러를
+    # 함께 200에 담아 보낸다. 실제로 겪어보니 이 "error" 필드가 단일 객체가 아니라
+    # 리스트({"error": [{"code": ..., "message": ...}]})로 오는 경우가 있어서,
+    # 어떤 모양으로 와도 죽지 않도록 방어적으로 파싱한다.
+    if "error" in data:
+        err = data["error"]
+        err_item = err[0] if isinstance(err, list) and err else err
+        if isinstance(err_item, dict):
+            err_msg = err_item.get("message") or err_item.get("msg") or str(err_item)
+        else:
+            err_msg = str(err_item)
+        raise HTTPException(
+            status_code=502,
+            detail=f"ODsay 경로 탐색에 실패했습니다: {err_msg}",
+        )
+
+    paths = data.get("result", {}).get("path", [])
+    if not paths:
+        return {"found": False, "legs": [], "totalTime": None, "payment": None, "totalDistance": None}
+
+    best = paths[0]  # OPT=0(추천경로) 기준 정렬의 첫 번째 결과
+    info = best.get("info", {})
+
+    legs = []
+    for sub in best.get("subPath", []):
+        traffic_code = sub.get("trafficType")
+        mode = ODSAY_TRAFFIC_TYPE.get(traffic_code, f"unknown({traffic_code})")
+        leg = {
+            "mode": mode,
+            "sectionTime": sub.get("sectionTime"),  # 분
+            "distance": sub.get("distance"),  # 미터
+            "startName": sub.get("startName"),
+            "endName": sub.get("endName"),
+        }
+        lanes = sub.get("lane") or []
+        if mode == "bus" and lanes:
+            leg["routeName"] = ", ".join(sorted({str(l.get("busNo", "")) for l in lanes if l.get("busNo")}))
+        elif mode == "subway" and lanes:
+            leg["routeName"] = ", ".join(sorted({str(l.get("name", "")) for l in lanes if l.get("name")}))
+        legs.append(leg)
+
+    return {
+        "found": True,
+        "totalTime": info.get("totalTime"),  # 분
+        "payment": info.get("payment"),  # 원
+        "totalDistance": info.get("totalDistance"),  # 미터
+        "busTransitCount": info.get("busTransitCount"),
+        "subwayTransitCount": info.get("subwayTransitCount"),
+        "legs": legs,
+    }
 
 
 # 프로덕션 배포용: 프론트엔드 빌드 결과(frontend/dist)가 있으면 그대로 서빙한다.

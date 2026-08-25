@@ -1,13 +1,18 @@
 import { useEffect, useMemo, useState } from 'react';
 import SearchField from './components/SearchField.jsx';
 import KakaoMap from './components/KakaoMap.jsx';
+import RoutePanel from './components/RoutePanel.jsx';
 import { loadKakaoSdk } from './lib/kakao.js';
 import { haversineMeters, formatDistance } from './lib/geo.js';
+import { fetchRoute } from './lib/route.js';
 
 export default function App() {
   const [kakaoLoaded, setKakaoLoaded] = useState(false);
   const [configWarning, setConfigWarning] = useState('');
   const [picked, setPicked] = useState({ origin: null, dest: null });
+  const [routeStatus, setRouteStatus] = useState('idle'); // idle | loading | error | done
+  const [route, setRoute] = useState(null);
+  const [routeError, setRouteError] = useState('');
 
   // 부트스트랩: 백엔드에서 설정(JS 키)을 받아와 카카오맵 SDK를 로드한다.
   useEffect(() => {
@@ -51,6 +56,31 @@ export default function App() {
     return formatDistance(haversineMeters(picked.origin, picked.dest));
   }, [picked.origin, picked.dest]);
 
+  // 출발지·목적지가 모두 정해지면 ODsay로 실제 대중교통 경로를 조회한다.
+  useEffect(() => {
+    if (!picked.origin || !picked.dest) {
+      setRouteStatus('idle');
+      setRoute(null);
+      return;
+    }
+    let cancelled = false;
+    setRouteStatus('loading');
+    fetchRoute(picked.origin, picked.dest)
+      .then((data) => {
+        if (cancelled) return;
+        setRoute(data);
+        setRouteStatus('done');
+      })
+      .catch((err) => {
+        if (cancelled) return;
+        setRouteError(err.message);
+        setRouteStatus('error');
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [picked.origin, picked.dest]);
+
   return (
     <div className="page">
       <header>
@@ -86,16 +116,17 @@ export default function App() {
 
         {distanceLabel && (
           <div className="distance-line">
-            두 지점 사이 직선거리 약 <b>{distanceLabel}</b> · 실제 도보+버스 경로는 ODsay API
-            연동 시 대체될 예정입니다.
+            두 지점 사이 직선거리 약 <b>{distanceLabel}</b> (참고용 — 아래가 ODsay로 조회한
+            실제 대중교통 경로입니다)
           </div>
         )}
 
+        <RoutePanel status={routeStatus} route={route} errorMsg={routeError} />
+
         <p className="footnote inline">
-          검색은 이 페이지가 아니라 백엔드(<code>backend/main.py</code>)가 카카오 로컬 API를
-          대신 호출해서 결과만 돌려줍니다 — REST API 키가 브라우저에 노출되지 않습니다. 두
-          지점을 모두 고르면 지도에 직선을 그어 직선거리를 보여주는데, 실제 도보+버스
-          경로(ODsay 연동)는 다음 단계입니다.
+          장소 검색과 경로 조회 모두 이 페이지가 아니라 백엔드(<code>backend/main.py</code>)가
+          카카오 로컬 API·ODsay API를 대신 호출해서 결과만 돌려줍니다 — REST API 키가
+          브라우저에 노출되지 않습니다.
         </p>
       </section>
 
