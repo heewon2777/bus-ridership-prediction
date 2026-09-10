@@ -11,7 +11,8 @@ export default function App() {
   const [configWarning, setConfigWarning] = useState('');
   const [picked, setPicked] = useState({ origin: null, dest: null });
   const [routeStatus, setRouteStatus] = useState('idle'); // idle | loading | error | done
-  const [route, setRoute] = useState(null);
+  const [route, setRoute] = useState(null); // { found, paths: [...] } — 첫 번째가 추천, 나머지는 대안
+  const [selectedPath, setSelectedPath] = useState(0);
   const [routeError, setRouteError] = useState('');
 
   // 부트스트랩: 백엔드에서 설정(JS 키)을 받아와 카카오맵 SDK를 로드한다.
@@ -65,10 +66,14 @@ export default function App() {
     }
     let cancelled = false;
     setRouteStatus('loading');
+    // 이전 조회 결과를 먼저 비운다 — 안 그러면 새 지점을 고른 뒤 조회가 실패했을 때
+    // 지도에 옛 경로선이 그대로 남는다.
+    setRoute(null);
     fetchRoute(picked.origin, picked.dest)
       .then((data) => {
         if (cancelled) return;
         setRoute(data);
+        setSelectedPath(0);
         setRouteStatus('done');
       })
       .catch((err) => {
@@ -113,7 +118,7 @@ export default function App() {
           />
         </div>
 
-        <KakaoMap kakaoLoaded={kakaoLoaded} picked={picked} />
+        <KakaoMap kakaoLoaded={kakaoLoaded} picked={picked} path={route?.paths?.[selectedPath] ?? null} />
 
         {distanceLabel && (
           <div className="distance-line">
@@ -122,7 +127,13 @@ export default function App() {
           </div>
         )}
 
-        <RoutePanel status={routeStatus} route={route} errorMsg={routeError} />
+        <RoutePanel
+          status={routeStatus}
+          route={route}
+          selectedPath={selectedPath}
+          onSelectPath={setSelectedPath}
+          errorMsg={routeError}
+        />
 
         <p className="footnote inline">
           장소 검색과 경로 조회 모두 이 페이지가 아니라 백엔드(<code>backend/main.py</code>)가

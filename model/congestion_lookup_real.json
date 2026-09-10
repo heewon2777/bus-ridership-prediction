@@ -1,0 +1,290 @@
+[
+  {
+    "route": "143",
+    "bus_type": "일반",
+    "hour": 0,
+    "p_capacity": 0.9534
+  },
+  {
+    "route": "143",
+    "bus_type": "일반",
+    "hour": 1,
+    "p_capacity": 0.9993
+  },
+  {
+    "route": "143",
+    "bus_type": "일반",
+    "hour": 2,
+    "p_capacity": 0.9998
+  },
+  {
+    "route": "143",
+    "bus_type": "일반",
+    "hour": 3,
+    "p_capacity": 0.9998
+  },
+  {
+    "route": "143",
+    "bus_type": "일반",
+    "hour": 4,
+    "p_capacity": 0.9538
+  },
+  {
+    "route": "143",
+    "bus_type": "일반",
+    "hour": 5,
+    "p_capacity": 0.9421
+  },
+  {
+    "route": "143",
+    "bus_type": "일반",
+    "hour": 6,
+    "p_capacity": 0.8657
+  },
+  {
+    "route": "143",
+    "bus_type": "일반",
+    "hour": 7,
+    "p_capacity": 0.6313
+  },
+  {
+    "route": "143",
+    "bus_type": "일반",
+    "hour": 8,
+    "p_capacity": 0.5484
+  },
+  {
+    "route": "143",
+    "bus_type": "일반",
+    "hour": 9,
+    "p_capacity": 0.5617
+  },
+  {
+    "route": "143",
+    "bus_type": "일반",
+    "hour": 10,
+    "p_capacity": 0.6682
+  },
+  {
+    "route": "143",
+    "bus_type": "일반",
+    "hour": 11,
+    "p_capacity": 0.6411
+  },
+  {
+    "route": "143",
+    "bus_type": "일반",
+    "hour": 12,
+    "p_capacity": 0.5595
+  },
+  {
+    "route": "143",
+    "bus_type": "일반",
+    "hour": 13,
+    "p_capacity": 0.6217
+  },
+  {
+    "route": "143",
+    "bus_type": "일반",
+    "hour": 14,
+    "p_capacity": 0.5671
+  },
+  {
+    "route": "143",
+    "bus_type": "일반",
+    "hour": 15,
+    "p_capacity": 0.5057
+  },
+  {
+    "route": "143",
+    "bus_type": "일반",
+    "hour": 16,
+    "p_capacity": 0.4411
+  },
+  {
+    "route": "143",
+    "bus_type": "일반",
+    "hour": 17,
+    "p_capacity": 0.3826
+  },
+  {
+    "route": "143",
+    "bus_type": "일반",
+    "hour": 18,
+    "p_capacity": 0.445
+  },
+  {
+    "route": "143",
+    "bus_type": "일반",
+    "hour": 19,
+    "p_capacity": 0.5896
+  },
+  {
+    "route": "143",
+    "bus_type": "일반",
+    "hour": 20,
+    "p_capacity": 0.6329
+  },
+  {
+    "route": "143",
+    "bus_type": "일반",
+    "hour": 21,
+    "p_capacity": 0.6636
+  },
+  {
+    "route": "143",
+    "bus_type": "일반",
+    "hour": 22,
+    "p_capacity": 0.7443
+  },
+  {
+    "route": "143",
+    "bus_type": "일반",
+    "hour": 23,
+    "p_capacity": 0.9295
+  },
+  {
+    "route": "402",
+    "bus_type": "일반",
+    "hour": 0,
+    "p_capacity": 0.9303
+  },
+  {
+    "route": "402",
+    "bus_type": "일반",
+    "hour": 1,
+    "p_capacity": 0.9686
+  },
+  {
+    "route": "402",
+    "bus_type": "일반",
+    "hour": 2,
+    "p_capacity": 0.9997
+  },
+  {
+    "route": "402",
+    "bus_type": "일반",
+    "hour": 3,
+    "p_capacity": 0.9997
+  },
+  {
+    "route": "402",
+    "bus_type": "일반",
+    "hour": 4,
+    "p_capacity": 0.9944
+  },
+  {
+    "route": "402",
+    "bus_type": "일반",
+    "hour": 5,
+    "p_capacity": 0.9406
+  },
+  {
+    "route": "402",
+    "bus_type": "일반",
+    "hour": 6,
+    "p_capacity": 0.8295
+  },
+  {
+    "route": "402",
+    "bus_type": "일반",
+    "hour": 7,
+    "p_capacity": 0.6139
+  },
+  {
+    "route": "402",
+    "bus_type": "일반",
+    "hour": 8,
+    "p_capacity": 0.5058
+  },
+  {
+    "route": "402",
+    "bus_type": "일반",
+    "hour": 9,
+    "p_capacity": 0.5768
+  },
+  {
+    "route": "402",
+    "bus_type": "일반",
+    "hour": 10,
+    "p_capacity": 0.6249
+  },
+  {
+    "route": "402",
+    "bus_type": "일반",
+    "hour": 11,
+    "p_capacity": 0.6058
+  },
+  {
+    "route": "402",
+    "bus_type": "일반",
+    "hour": 12,
+    "p_capacity": 0.5831
+  },
+  {
+    "route": "402",
+    "bus_type": "일반",
+    "hour": 13,
+    "p_capacity": 0.577
+  },
+  {
+    "route": "402",
+    "bus_type": "일반",
+    "hour": 14,
+    "p_capacity": 0.5466
+  },
+  {
+    "route": "402",
+    "bus_type": "일반",
+    "hour": 15,
+    "p_capacity": 0.5692
+  },
+  {
+    "route": "402",
+    "bus_type": "일반",
+    "hour": 16,
+    "p_capacity": 0.483
+  },
+  {
+    "route": "402",
+    "bus_type": "일반",
+    "hour": 17,
+    "p_capacity": 0.4773
+  },
+  {
+    "route": "402",
+    "bus_type": "일반",
+    "hour": 18,
+    "p_capacity": 0.4678
+  },
+  {
+    "route": "402",
+    "bus_type": "일반",
+    "hour": 19,
+    "p_capacity": 0.5912
+  },
+  {
+    "route": "402",
+    "bus_type": "일반",
+    "hour": 20,
+    "p_capacity": 0.6593
+  },
+  {
+    "route": "402",
+    "bus_type": "일반",
+    "hour": 21,
+    "p_capacity": 0.7021
+  },
+  {
+    "route": "402",
+    "bus_type": "일반",
+    "hour": 22,
+    "p_capacity": 0.7385
+  },
+  {
+    "route": "402",
+    "bus_type": "일반",
+    "hour": 23,
+    "p_capacity": 0.8409
+  }
+]
