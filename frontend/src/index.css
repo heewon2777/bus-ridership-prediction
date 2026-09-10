@@ -82,7 +82,11 @@ h1 {
 .panel h2 { font-family: 'Gothic A1', sans-serif; font-weight: 800; font-size: 16px; margin: 0; }
 
 .picker-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-@media (max-width: 560px) { .picker-row { grid-template-columns: 1fr; } }
+@media (max-width: 560px) {
+  .picker-row { grid-template-columns: 1fr; }
+  /* iOS Safari는 16px보다 작은 입력창에 포커스하면 화면 전체를 자동 확대한다 */
+  .search-box input { font-size: 16px; }
+}
 
 .field label {
   display: flex;
@@ -119,6 +123,20 @@ h1 {
   font-family: 'Noto Sans KR', sans-serif;
   color: var(--text);
 }
+.locate-btn {
+  border: none;
+  background: transparent;
+  color: var(--accent);
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  padding: 8px 0 8px 6px;
+}
+.locate-btn:disabled { opacity: 0.5; cursor: default; }
+.search-hint { margin-top: 5px; font-size: 11.5px; line-height: 1.5; color: var(--text-muted); }
+.search-hint.error { color: var(--critical); }
 .search-dropdown {
   position: absolute;
   z-index: 30;

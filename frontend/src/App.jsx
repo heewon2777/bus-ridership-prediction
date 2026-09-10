@@ -103,6 +103,7 @@ export default function App() {
             dotClass="origin"
             placeholder="예: 강남역, 동탄2신도시 환승센터"
             onSelect={(place) => setPicked((p) => ({ ...p, origin: place }))}
+            allowCurrentLocation
           />
           <SearchField
             label="목적지"
