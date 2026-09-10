@@ -1,0 +1,10 @@
+# 에이전트 도구가 만드는 로컬 산출물 (커밋하지 않음)
+.claude-flow/
+.swarm/
+.hive-mind/
+
+# 에디터/OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
