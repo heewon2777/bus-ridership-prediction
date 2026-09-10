@@ -16,8 +16,12 @@ Thumbs.db
 .claude/commands/
 .claude/skills/
 .claude/agents/
-.claude-flow/*
-!.claude-flow/config.yaml
-!.claude-flow/.gitignore
+# .claude-flow/는 hooks가 실행된 위치마다 생길 수 있어(frontend/ 등) 어디서든 무시하고,
+# 루트의 설정 파일 두 개만 예외로 둔다.
+**/.claude-flow/
+!/.claude-flow/
+/.claude-flow/*
+!/.claude-flow/config.yaml
+!/.claude-flow/.gitignore
 .swarm/
 .hive-mind/
