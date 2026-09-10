@@ -25,3 +25,6 @@ Thumbs.db
 !/.claude-flow/.gitignore
 .swarm/
 .hive-mind/
+
+# hooks가 커밋 후마다 다시 쓰는 로컬 버전 마커
+.claude/.proven-config-version
