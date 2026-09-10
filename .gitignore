@@ -28,6 +28,3 @@ Thumbs.db
 
 # hooks가 커밋 후마다 다시 쓰는 로컬 버전 마커
 .claude/.proven-config-version
-
-# hooks가 커밋 후마다 다시 쓰는 로컬 버전 마커
-.claude/.proven-config-version
