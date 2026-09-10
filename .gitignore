@@ -1,10 +1,23 @@
-# 에이전트 도구가 만드는 로컬 산출물 (커밋하지 않음)
-.claude-flow/
-.swarm/
-.hive-mind/
-
 # 에디터/OS
 .vscode/
 .idea/
 .DS_Store
 Thumbs.db
+
+# 비밀값 (backend/.gitignore에도 있지만 루트에서 한 번 더 막는다)
+.env
+.env.local
+.env.*.local
+
+# --- ruflo (에이전트 오케스트레이션 도구) ---
+# 추적하는 것: .claude/settings.json(hooks), .claude/helpers/(hooks가 호출), .claude-flow/config.yaml
+# 아래는 `npx -y @claude-flow/cli@latest init --no-signup --no-skills-sh --no-global` 로 재생성되는
+# 범용 라이브러리·런타임 데이터라 커밋하지 않는다 (CLAUDE.md "ruflo" 절 참고).
+.claude/commands/
+.claude/skills/
+.claude/agents/
+.claude-flow/*
+!.claude-flow/config.yaml
+!.claude-flow/.gitignore
+.swarm/
+.hive-mind/

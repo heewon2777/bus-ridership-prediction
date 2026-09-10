@@ -80,3 +80,21 @@ cd backend  && python probe_odsay.py        # 실제 ODsay 응답 구조 + traff
   반영하세요.
 - 검증한 것과 검증하지 못한 것을 구분해서 적습니다. 이 저장소의 문서는 "확인 못 함"을
   명시하는 것을 중요하게 다뤄 왔습니다.
+
+## ruflo (에이전트 오케스트레이션 도구) — 2026-09-10 초기화
+
+`npx @claude-flow/cli@latest init`으로 초기화돼 있습니다. 저장소에 추적하는 것은
+hooks 설정(`.claude/settings.json`)과 hooks가 호출하는 `.claude/helpers/`, 런타임 설정
+`.claude-flow/config.yaml`만입니다. ruflo가 함께 생성하는 범용 라이브러리
+(`.claude/commands|skills|agents/`, 약 200개 파일)와 런타임 데이터(`.claude-flow/` 나머지)는
+버스 예측 앱과 무관하고 세션마다 스킬 목록만 부풀리므로 커밋하지 않습니다.
+
+- 새로 clone한 뒤 ruflo가 필요하면: `npx -y @claude-flow/cli@latest init --no-signup --no-skills-sh --no-global`
+  (기존 파일은 덮어쓰지 않으며, 무시된 디렉터리를 다시 만들어 줍니다)
+- 진단: `npx -y @claude-flow/cli@latest doctor` / 상태: `... status`
+- init이 `settings.json`에 넣는 `"model"` 키는 **제거했습니다** — 프로젝트 레벨 모델 고정이라
+  `/model` 전환을 막습니다. init을 다시 돌린 뒤에는 이 키가 되살아나지 않았는지 확인하세요.
+- hooks는 `IF EXIST .claude/helpers/hook-handler.cjs` 가드로 동작해서, 헬퍼가 없으면
+  조용히 건너뜁니다. 데몬(`daemon start`)은 켜두지 않았습니다.
+- 위치·ODsay 파싱처럼 이 앱의 실제 로직을 다루는 작업에 ruflo 스웜이 꼭 필요하진 않습니다.
+  단일 파일 수정이나 API 연동 한 건은 그냥 직접 하세요.
